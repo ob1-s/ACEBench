@@ -43,6 +43,9 @@ class APIModelInference(BaseHandler):
         elif "o1" in self.model_name:
             api_key = os.getenv("GPT_AGENT_API_KEY")
             base_url = os.getenv("GPT_BASE_URL")
+        else:
+            api_key = os.getenv("GPT_API_KEY")
+            base_url = os.getenv("GPT_BASE_URL")
             
         self.client = OpenAI(base_url=base_url, api_key=api_key)
         self.model_name = model_name
@@ -112,7 +115,7 @@ class APIModelInference(BaseHandler):
                 )
                 result = response.choices[0].message.content
 
-                if "deepseek-r1" in self.model_name:
+                if "deepseek-r1" in self.model_name or "thinking" in self.model_name.lower():
                     match = re.search(r'</think>\s*(.*)$', result, re.DOTALL)
                     result = match.group(1).strip()
                 break  # If successful, break the loop

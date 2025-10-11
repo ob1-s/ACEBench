@@ -174,7 +174,7 @@ if __name__ == "__main__":
     args.result_path = result_path
 
     # Get the filenames of the test cases
-    test_names = {test_name for category in args.category for test_name in ACE_DATA_CATEGORY[category]}
+    test_names = {test_name for test_category in (args.category or []) for test_name in (ACE_DATA_CATEGORY.get(test_category, [test_category]))}
     test_files = [f"data_{test_name}.json" for test_name in test_names]
 
     for model_name in args.model:

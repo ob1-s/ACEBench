@@ -422,6 +422,15 @@ def agent_eval(model_result, prompt, possible_answer, test_category, model_name)
         else:
             correct_count += 1
             correct_index.append(i)
+            # Add the correct sample to the result list as well
+            result.append(
+                {
+                    "id": i,
+                    "valid": True,
+                    "error": [],
+                    "error_type": "",
+                }
+            )
 
     accuracy = round(correct_count / len(model_result),3)
     process_accuracy = agent_eval_process(model_name, model_result,possible_answer,test_category, correct_index, language)
@@ -446,8 +455,21 @@ def agent_eval_process(model_name, model_results, possible_answers, test_categor
     total_accuracy = 0  # Store the total accuracy of all data
 
     for index in range(len(model_results)):
+        call_process = possible_answers[index]["mile_stone"]
+        model_result = model_results[index]["process"]
+        name = test_category + "_" + str(index)
+
         if index in correct_list:
-            accuracy = 1.00 
+            # This sample was 100% correct end-to-end.
+            # We will log its process accuracy as 1.0 and include its details.
+            rounded_accuracy = 1.00
+            individual_accuracies.append({
+                name: {
+                    "process_accuracy": rounded_accuracy,
+                    "model_output": model_result,
+                    "call_process": call_process
+                }
+            })
             total_accuracy += 1.00
             continue
         call_process = possible_answers[index]["mile_stone"]
@@ -484,8 +506,7 @@ def agent_eval_process(model_name, model_results, possible_answers, test_categor
     
 
             # Save the accuracy of each data point
-            if accuracy != 1.00: 
-                individual_accuracies.append({name: {"process_accuracy": rounded_accuracy, "model_output": model_result, "call_process": call_process}})
+            individual_accuracies.append({name: {"process_accuracy": rounded_accuracy, "model_output": model_result, "call_process": call_process}})
             # Accumulate total accuracy
             total_accuracy += max_accuracy
     
@@ -516,8 +537,7 @@ def agent_eval_process(model_name, model_results, possible_answers, test_categor
 
             # Save the accuracy of each data point
             name = test_category + "_" + str(index)
-            if accuracy != 1.00: 
-                individual_accuracies.append({name: {"process_accuracy": rounded_accuracy, "model_output": model_result, "call_process": call_process}})
+            individual_accuracies.append({name: {"process_accuracy": rounded_accuracy, "model_output": model_result, "call_process": call_process}})
             
             # Accumulate total accuracy
             total_accuracy += accuracy
@@ -529,6 +549,9 @@ def agent_eval_process(model_name, model_results, possible_answers, test_categor
         file_name = "./score_all/score_zh/" + model_name + "/data_" + test_category + "_process.json"
     elif language == "en":
         file_name = "./score_all/score_en/" + model_name + "/data_" + test_category + "_process.json"
+    
+    os.makedirs(os.path.dirname(file_name), exist_ok=True)
+    
     # Write individual_accuracies to JSON file line by line
     with open(file_name, 'w', encoding="utf-8") as f:
         for entry in individual_accuracies:
@@ -657,7 +680,7 @@ if __name__ == "__main__":
     ]
 
     # Extract and normalize model names
-    model_names = [model_name.replace("/", "_") for model_name in (args.model or [])]
+    model_names = list(args.model or [])
 
     # Get language
     language = args.language

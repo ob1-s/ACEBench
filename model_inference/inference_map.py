@@ -32,6 +32,11 @@ inference_map_groups = {
         "gpt-4o-mini-2024-07-18",
         "claude-3-5-sonnet-20241022",
         "claude-3-haiku-20240307",
+        "Qwen/Qwen2.5-Coder-32B-Instruct",
+        "Qwen/Qwen2.5-Coder-7B-Instruct",
+        "Qwen/Qwen3-4B-Instruct-2507",
+        "Qwen/Qwen3-4B-Thinking-2507",
+        "qwen/qwen3-30b-a3b-instruct-2507",
     ],
     CommonInference: [
         "gemini-1.5-pro",

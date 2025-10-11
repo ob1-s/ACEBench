@@ -63,18 +63,19 @@ FOOD_SYSTEM_EN = """Below is the account information and passwords for different
 class APIAgent_step():
 
     def __init__(self, model_name, time, functions, temperature=0.001, top_p=1, max_tokens=1000, language="zh") -> None:
-        self.model_name = model_name.lower()
+        self.model_name = model_name
+        model_id = model_name.lower()
         
-        if "gpt" in self.model_name:
+        if "gpt" in model_id:
             api_key = os.getenv("GPT_AGENT_API_KEY")
             base_url = os.getenv("GPT_AGENT_BASE_URL")
-        elif "deepseek" in self.model_name:
+        elif "deepseek" in model_id:
             api_key = os.getenv("DEEPSEEK_API_KEY")
             base_url = os.getenv("DEEPSEEK_BASE_URL")
-        elif "qwen" in self.model_name:
+        elif "qwen" in model_id:
             api_key = os.getenv("QWEN_API_KEY")
             base_url = os.getenv("QWEN_BASE_URL")
-        elif "kimi" in self.model_name:
+        elif "kimi" in model_id:
             api_key = os.getenv("KIMI_API_KEY")
             base_url = os.getenv("KIMI_BASE_URL")
         else:

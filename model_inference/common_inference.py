@@ -144,7 +144,7 @@ class CommonInference(BaseHandler):
     
 
     def multi_step_inference(self, question, initial_config, functions, involved_classes, test_id, time):
-        agent = CommonAgent_Step(model = self.model, language=self.language, functions = functions)
+        agent = CommonAgent_Step(model = self.model, language=self.language, functions = functions, test_id=test_id)
         execution = EXECUTION_STEP(agent_model_name = self.model_name, initial_config = initial_config, involved_classes = involved_classes, test_id = test_id, language=self.language )
 
         scene = Mulit_Step_Scene(question=question, initial_state=initial_config, functions = functions, agent_role = agent, language = self.language)
